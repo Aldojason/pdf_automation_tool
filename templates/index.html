@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF Automation Tool</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔧 PDF Automation Tool</h1>
+            <p>Professional PDF operations made simple</p>
+        </div>
+
+        <div class="tools-grid">
+            <!-- Merge PDFs -->
+            <div class="tool-card">
+                <h3>
+                    <span class="icon">📄</span>
+                    Merge PDFs
+                </h3>
+                <div class="form-group">
+                    <label>Select PDF files to merge:</label>
+                    <div class="file-input-container">
+                        <input type="file" id="merge-files" class="file-input" multiple accept=".pdf">
+                        <label for="merge-files" class="file-input-label">
+                            Click to select multiple PDF files (Hold Ctrl/Cmd) or drag & drop
+                        </label>
+                    </div>
+                    <div id="merge-file-list" class="file-list" style="display: none;"></div>
+                </div>
+                <div class="form-group">
+                    <label>Output filename:</label>
+                    <input type="text" class="form-control" id="merge-output" placeholder="merged_resume.pdf" value="merged_resume.pdf">
+                </div>
+                <button class="btn" onclick="mergePDFs()">Merge PDFs</button>
+            </div>
+
+            <!-- Add Watermark -->
+            <div class="tool-card">
+                <h3>
+                    <span class="icon">🏷️</span>
+                    Add Watermark
+                </h3>
+                <div class="form-group">
+                    <label>Select PDF file:</label>
+                    <div class="file-input-container">
+                        <input type="file" id="watermark-file" class="file-input" accept=".pdf">
+                        <label for="watermark-file" class="file-input-label">
+                            Click to select PDF file
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Watermark text:</label>
+                    <input type="text" class="form-control" id="watermark-text" placeholder="CONFIDENTIAL">
+                </div>
+                <div class="form-group">
+                    <label>Output filename:</label>
+                    <input type="text" class="form-control" id="watermark-output" placeholder="watermarked_resume.pdf" value="watermarked_resume.pdf">
+                </div>
+                <button class="btn" onclick="addWatermark()">Add Watermark</button>
+            </div>
+
+            <!-- Extract Text -->
+            <div class="tool-card">
+                <h3>
+                    <span class="icon">📝</span>
+                    Extract Text
+                </h3>
+                <div class="form-group">
+                    <label>Select PDF file:</label>
+                    <div class="file-input-container">
+                        <input type="file" id="extract-file" class="file-input" accept=".pdf">
+                        <label for="extract-file" class="file-input-label">
+                            Click to select PDF file
+                        </label>
+                    </div>
+                </div>
+                <button class="btn" onclick="extractText()">Extract Text</button>
+            </div>
+
+            <!-- Split PDF -->
+            <div class="tool-card">
+                <h3>
+                    <span class="icon">✂️</span>
+                    Split PDF
+                </h3>
+                <div class="form-group">
+                    <label>Select PDF file:</label>
+                    <div class="file-input-container">
+                        <input type="file" id="split-file" class="file-input" accept=".pdf">
+                        <label for="split-file" class="file-input-label">
+                            Click to select PDF file
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Pages per file:</label>
+                    <input type="number" class="form-control" id="pages-per-file" value="1" min="1">
+                </div>
+                <button class="btn" onclick="splitPDF()">Split PDF</button>
+            </div>
+
+            <!-- Rotate Pages -->
+            <div class="tool-card">
+                <h3>
+                    <span class="icon">🔄</span>
+                    Rotate Pages
+                </h3>
+                <div class="form-group">
+                    <label>Select PDF file:</label>
+                    <div class="file-input-container">
+                        <input type="file" id="rotate-file" class="file-input" accept=".pdf">
+                        <label for="rotate-file" class="file-input-label">
+                            Click to select PDF file
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Rotation angle:</label>
+                    <select class="form-control" id="rotation-angle">
+                        <option value="90">90° Clockwise</option>
+                        <option value="180">180°</option>
+                        <option value="270">270° Clockwise (90° Counter)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Output filename:</label>
+                    <input type="text" class="form-control" id="rotate-output" placeholder="rotated_resume.pdf" value="rotated_resume.pdf">
+                </div>
+                <button class="btn" onclick="rotatePages()">Rotate Pages</button>
+            </div>
+
+            <!-- Create Cover Letter -->
+            <div class="tool-card">
+                <h3>
+                    <span class="icon">💼</span>
+                    Create Cover Letter
+                </h3>
+                <div class="form-group">
+                    <label>Your Name:</label>
+                    <input type="text" class="form-control" id="cover-name" placeholder="John Doe">
+                </div>
+                <div class="form-group">
+                    <label>Position:</label>
+                    <input type="text" class="form-control" id="cover-position" placeholder="Software Engineer">
+                </div>
+                <div class="form-group">
+                    <label>Company:</label>
+                    <input type="text" class="form-control" id="cover-company" placeholder="Tech Corp">
+                </div>
+                <div class="form-group">
+                    <label>Output filename:</label>
+                    <input type="text" class="form-control" id="cover-output" placeholder="cover_letter.pdf" value="cover_letter.pdf">
+                </div>
+                <button class="btn" onclick="createCoverLetter()">Create Cover Letter</button>
+            </div>
+        </div>
+
+        <div id="result-area" class="result-area">
+            <h3>Results</h3>
+            <div id="progress-container" style="display: none;">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+            </div>
+            <div id="result-content"></div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
